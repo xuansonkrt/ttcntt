@@ -40,3 +40,5 @@ E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\obj\Debug\
 E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\obj\Debug\TTCNTT.Form1.resources
 E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\obj\Debug\TTCNTT.Properties.Resources.resources
 E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\obj\Debug\TTCNTT.csproj.GenerateResource.Cache
+E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
+E:\IT_MTA\Nam 4\Ki 2\Thuc tap CNTT\sourcecode\v2\ttcntt\TTCNTT\TTCNTT\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.xml
