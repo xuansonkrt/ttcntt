@@ -25,19 +25,20 @@ namespace TTCNTT
         private int soCanh;
         private int start;
         private int end;
-        double[,] distance = new double[30,30];
+        double[,] distance = new double[30, 30];
         List<entities.Point> lstPoint = new List<entities.Point>();
-        private bool[] chuaxet = new bool[30];
-        private int[] truoc = new int[30];  // luu hanh trinh
+        private bool[] daxet = new bool[30];
+        private int[] truoc = new int[30]; // luu hanh trinh
         private double[] d = new double[30]; // luu khoang cach toi dinh thu i
         private int VOCUNG = Int32.MaxValue;
         private String path = "";
+
         public Form1()
         {
             InitializeComponent();
             //create a form 
-           // System.Windows.Forms.Form form = new System.Windows.Forms.Form();
-            
+            // System.Windows.Forms.Form form = new System.Windows.Forms.Form();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -51,13 +52,14 @@ namespace TTCNTT
             this.distance = new double[30, 30];
             this.lstPoint = new List<entities.Point>();
             path = "";
-            chuaxet = new bool[30];
+            daxet = new bool[30];
             d = new double[30];
             d = new double[30];
             if (txtSoDinh.Text.Equals("") || txtSoCanh.Text.Equals("")
-                || txtStart.Text.Equals("") || txtEnd.Text.Equals(""))
+                                          || txtStart.Text.Equals("") || txtEnd.Text.Equals(""))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin", "ERROR");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin", "Có lỗi xảy ra");
+                this.txtSoDinh.Focus();
                 return;
             }
 
@@ -65,22 +67,39 @@ namespace TTCNTT
             {
                 soDinh = Int32.Parse(this.txtSoDinh.Text);
                 soCanh = Int32.Parse(this.txtSoCanh.Text);
-                start = Int32.Parse(this.txtStart.Text)-1;
-                end = Int32.Parse(this.txtEnd.Text)-1;
+                start = Int32.Parse(this.txtStart.Text) - 1;
+                end = Int32.Parse(this.txtEnd.Text) - 1;
 
                 int max = (soDinh * (soDinh - 1) / 2);
                 if (soCanh > max)
                 {
-                    MessageBox.Show("Với số đỉnh là " +soDinh.ToString() + " thì số cạnh tối đa là " + max.ToString(), "ERROR");
+                    MessageBox.Show("Với số đỉnh là " + soDinh.ToString() + " thì số cạnh tối đa là " + max.ToString(),
+                        "Có lỗi xảy ra");
+                    this.txtSoCanh.Focus();
                     return;
                 }
+
+                if (start < 0 || start >= soDinh)
+                {
+                    MessageBox.Show("Điểm bắt đầu không hợp lệ","Có lỗi xảy ra");
+                    this.txtStart.Focus();
+                    return;
+                }
+
+                if (end < 0 || end >= soDinh)
+                {
+                    MessageBox.Show("Điểm kết thúc không hợp lệ", "Có lỗi xảy ra");
+                    this.txtEnd.Focus();
+                    return;
+                }
+
                 this.InitData();
                 this.Dijkstra();
                 this.ShowGraph();
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.ToString(), "ERROR");
+                MessageBox.Show(exception.ToString(), "Có lỗi xảy ra");
                 return;
                 throw;
             }
@@ -96,6 +115,7 @@ namespace TTCNTT
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -122,6 +142,7 @@ namespace TTCNTT
                 {
                     this.distance[i, j] = this.VOCUNG;
                 }
+
                 this.distance[i, i] = 0;
             }
 
@@ -149,6 +170,7 @@ namespace TTCNTT
         {
             //create a viewer object 
             Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+           
             //create a graph object 
             Microsoft.Msagl.Drawing.Graph graph = new Microsoft.Msagl.Drawing.Graph("graph");
             graph.CreateGeometryGraph();
@@ -164,8 +186,8 @@ namespace TTCNTT
                 i++;
             }
 
-            graph.FindNode((this.start+1).ToString()).Attr.FillColor = Color.Blue;
-            graph.FindNode((this.end+1).ToString()).Attr.FillColor = Color.Red;
+            graph.FindNode((this.start + 1).ToString()).Attr.FillColor = Color.Blue;
+            graph.FindNode((this.end + 1).ToString()).Attr.FillColor = Color.Red;
 
             for (int j = 0; j < this.soDinh; j++)
             {
@@ -173,16 +195,19 @@ namespace TTCNTT
                 {
                     if (this.distance[j, k] != this.VOCUNG && this.distance[j, k] != 0)
                     {
-                        String tmp = "," + (j + 1).ToString()+","+ (k + 1).ToString() + ",";
+                        String tmp = "," + (j + 1).ToString() + "," + (k + 1).ToString() + ",";
+                        double dis = Math.Round(this.distance[j, k], 2);
                         if (this.path.Contains(tmp))
                         {
+                            /*graph.AddEdge((j + 1).ToString(), dis.ToString(), (k + 1).ToString()).Attr.Color = Color.Green;*/
                             graph.AddEdge((j + 1).ToString(), (k + 1).ToString()).Attr.Color = Color.Green;
                         }
                         else
                         {
-                            graph.AddEdge((j + 1).ToString(), (k + 1).ToString());
+                            /*graph.AddEdge((j + 1).ToString(), dis.ToString(), (k + 1).ToString());*/
+                            graph.AddEdge((j + 1).ToString(),  (k + 1).ToString());
                         }
-                        
+
                     }
                 }
             }
@@ -205,7 +230,19 @@ namespace TTCNTT
             this.groupBoxResult.Controls.Add(viewer);
             this.groupBoxResult.ResumeLayout();
 
-            MessageBox.Show("Độ dài ngắn nhất " + (d[this.end]).ToString(), "Thành công");
+            if (this.daxet[this.end])
+            {
+                MessageBox.Show("Độ dài đường đi ngắn nhất " + (Math.Round(d[this.end], 2)).ToString(), "Thành công");
+                this.txtLoTrinh.Text = this.path;
+                this.txtDoDai.Text = (Math.Round(d[this.end], 2)).ToString();
+            }
+            else
+            {
+                MessageBox.Show("Không tìm được đường đi ngắn nhất", "Có lỗi xảy ra");
+                this.txtLoTrinh.Text = "";
+                this.txtDoDai.Text = "";
+            }
+            
         }
 
         void Dijkstra()
@@ -215,50 +252,62 @@ namespace TTCNTT
             //khởi tạo nhãn tạm thời cho các đỉnh.
             for (int v = 0; v <= this.soDinh; v++)
             {
-                d[v] = this.distance[this.start,v];
+                d[v] = this.distance[this.start, v];
                 truoc[v] = this.start;
-                chuaxet[v] = false;
+                daxet[v] = false;
             }
+
             truoc[this.start] = 0;
             d[this.start] = 0;
-            chuaxet[this.start] = true;
+            daxet[this.start] = true;
             //bươc lặp
-            while (!chuaxet[this.end])
+            int loop = this.soDinh;
+            while (loop-- > 0)
             {
                 minp = this.VOCUNG;
                 //tìm đỉnh u sao cho d[u] là nhỏ nhất
                 for (int v = 0; v < this.soDinh; v++)
                 {
-                    if ((!chuaxet[v]) && (minp > d[v]))
+                    if ((!daxet[v]) && (minp > d[v]))
                     {
                         u = v;
                         minp = d[v];
                     }
                 }
-                chuaxet[u] = true;// u la dinh co nhan tam thoi nho nhat
-                if (!chuaxet[this.end])
+
+                daxet[u] = true; // u la dinh co nhan tam thoi nho nhat
+                if (!daxet[this.end])
                 {
                     //gán nhãn lại cho các đỉnh.
                     for (int v = 0; v < this.soDinh; v++)
                     {
-                        if ((!chuaxet[v]) && (d[u] + this.distance[u,v] < d[v]))
+                        if ((!daxet[v]) && (d[u] + this.distance[u, v] < d[v]))
                         {
-                            d[v] = d[u] + this.distance[u,v];
+                            d[v] = d[u] + this.distance[u, v];
                             truoc[v] = u;
                         }
                     }
                 }
+
+                if (daxet[this.end])
+                {
+                    break;
+                }
             }
 
             int i = truoc[this.end];
+            path = (this.end+1) + ",";
             while (i != this.start)
             {
-                this.path = (i+1) + "," + path;
+                this.path = (i + 1) + "," + path;
                 i = truoc[i];
             }
 
-            this.path = "," + (this.start+1) + "," + path;
+            this.path = "," + (this.start + 1) + "," + path;
         }
+
+
     }
+
 
 }
